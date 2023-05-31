@@ -4,9 +4,20 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import GridSearchCV
 from sklearn import svm
 from sklearn.pipeline import Pipeline
+from config import Config
+from flask_cors import CORS
 
 app = Flask(__name__)
+app.config.from_object(Config)
 
+# Enable CORS
+cors = CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:8000"}}, supports_credentials=True)
+
+@app.route("/tes", methods=['GET'])
+def home():
+    print('req masuk')
+    resp =  'Bismillah S.Kom. + Fulltime\n' + str(app.config)
+    return jsonify(resp), 200
 
 @app.route("/get_result/hewani", methods=['POST'])
 def get_result_hewani():
@@ -59,8 +70,8 @@ def get_result_hewani():
 
     # Create response dictionary
     response = {
-        "status_halal": status_halal,
-        "list_potensi": list_potensi
+        "status-halal": status_halal,
+        "list-potensi": list_potensi
     }
 
     return jsonify(response), 200
