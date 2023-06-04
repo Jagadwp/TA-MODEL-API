@@ -11,20 +11,39 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 # Enable CORS
-cors = CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:8000"}}, supports_credentials=True)
+cors = CORS(app, resources={
+            r"/*": {"origins": "http://127.0.0.1:8000"}}, supports_credentials=True)
 
-@app.route("/tes", methods=['GET'])
+
+@app.route("/tes", methods=['POST'])
 def home():
     print('req masuk')
-    resp =  'Bismillah S.Kom. + Fulltime\n' + str(app.config)
-    return jsonify(resp), 200
+    resp = 'Bismillah S.Kom. + Fulltime\n' + str(app.config)
+    print(resp)
+    return arrangeData(request), 200
 
-@app.route("/get_result/hewani", methods=['POST'])
-def get_result_hewani():
+
+@app.route("/get_prediction_result/hewani", methods=['POST'])
+def get_prediction_result_hewani():
     # Read the CSV file
-    data = pd.read_csv("./dataset/hewani/app_history.csv",
+    data = pd.read_csv(Config.HEWANI_DATASET_PATH,
                        sep=';', on_bad_lines='skip')
 
+    response = predict(data, request)
+    return response, 200
+
+
+@app.route("/get_prediction_result/nabati", methods=['POST'])
+def get_prediction_result_nabati():
+    # Read the CSV file
+    data = pd.read_csv(Config.NABATI_DATASET_PATH,
+                       sep=';', on_bad_lines='skip')
+
+    response = predict(data, request)
+    return response, 200
+
+
+def predict(data, request):
     # Pivot the data table
     dataset = data.pivot_table(
         index="CaseID", columns="Activity", values="Status_Halal", aggfunc='first')
@@ -49,9 +68,7 @@ def get_result_hewani():
     grid.fit(feature_enc, label)
 
     # Process request data
-    json_data = request.get_json()
-    event_logs = json_data['event_logs']
-    df = pd.DataFrame(event_logs)
+    df = arrangeData(request)
 
     # Preprocess test data
     df_test = df.pivot_table(
@@ -74,7 +91,30 @@ def get_result_hewani():
         "list-potensi": list_potensi
     }
 
-    return jsonify(response), 200
+    return jsonify(response)
+
+
+def arrangeData(request):
+    json_data = request.get_json()
+    event_logs = json_data['event-log']
+
+    df_data = []
+    for log in event_logs:
+        case_id = json_data['ingredient-id']
+        activity = log['label']
+        timestamp = log['timestamp']
+        originator = json_data['user-id']
+        status_halal = log['value']
+
+        df_data.append({
+            'CaseID': case_id,
+            'Activity': activity,
+            'Timestamp': timestamp,
+            'Originator': originator,
+            'Status_Halal': status_halal
+        })
+
+    return pd.DataFrame(df_data)
 
 
 if __name__ == "__main__":

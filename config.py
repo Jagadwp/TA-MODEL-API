@@ -9,4 +9,5 @@ class Config:
     SECRET_KEY = environ.get("SECRET_KEY")
     FLASK_APP = environ.get("FLASK_APP")
     FLASK_DEBUG = environ.get("FLASK_DEBUG")
-    ENVIRONMENT = environ.get("ENVIRONMENT")
+    HEWANI_DATASET_PATH = environ.get("HEWANI_DATASET_PATH")
+    NABATI_DATASET_PATH = environ.get("NABATI_DATASET_PATH")

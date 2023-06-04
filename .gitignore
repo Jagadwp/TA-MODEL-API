@@ -22,7 +22,6 @@ db_data
 *.pdf
 *.ppt
 *.pptx
-*.csv
 env/
 venv/
 local-test.py
