@@ -23,7 +23,7 @@ def home():
     return arrangeData(request), 200
 
 
-@app.route("/get_prediction_result/hewani", methods=['POST'])
+@app.route("/prediction/hewani", methods=['POST'])
 def get_prediction_result_hewani():
     # Read the CSV file
     data = pd.read_csv(Config.HEWANI_DATASET_PATH,
@@ -33,7 +33,7 @@ def get_prediction_result_hewani():
     return response, 200
 
 
-@app.route("/get_prediction_result/nabati", methods=['POST'])
+@app.route("/prediction/nabati", methods=['POST'])
 def get_prediction_result_nabati():
     # Read the CSV file
     data = pd.read_csv(Config.NABATI_DATASET_PATH,
