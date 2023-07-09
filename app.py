@@ -16,12 +16,9 @@ cors = CORS(app, resources={
 }, supports_credentials=True)
 
 
-@app.route("/tes", methods=['POST'])
+@app.route("/", methods=['GET'])
 def home():
-    print('req masuk')
-    resp = 'Bismillah S.Kom. + Fulltime\n' + str(app.config)
-    print(resp)
-    return arrangeData(request), 200
+    return "TA MODEL API -> Run in port:" + str(Config.PORT)
 
 
 @app.route("/prediction/hewani", methods=['POST'])
@@ -119,4 +116,4 @@ def arrangeData(request):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host="0.0.0.0", port=Config.PORT)
