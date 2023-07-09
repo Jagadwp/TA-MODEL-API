@@ -12,7 +12,8 @@ app.config.from_object(Config)
 
 # Enable CORS
 cors = CORS(app, resources={
-            r"/*": {"origins": "http://127.0.0.1:8000"}}, supports_credentials=True)
+    r"/*": {"origins": ["http://127.0.0.1:8000", "https://siapsertifikasihalal.my.id"]}
+}, supports_credentials=True)
 
 
 @app.route("/tes", methods=['POST'])
@@ -118,4 +119,4 @@ def arrangeData(request):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')
